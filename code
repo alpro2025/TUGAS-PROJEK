@@ -1,16 +1,109 @@
 #include<iostream>
 #include<string>
+#include<conio.h>
+#include<iomanip>
+#include<ctime>
 using namespace std;
 
-const int max_produkKering = 50;
+// output garis
+void line() {
+    cout << "===========================================\n";
+}
 
+// menu sign in
+void signIn(string &username, string &password) {
+	line();
+	cout<<"Sign In\n";
+	line();
+	cout<<"Masukkan username: ";
+	cin>>username;
+	cout<<"Masukkan password: ";
+	
+	char ch;
+	password.clear();
+	
+	while ((ch = _getch()) != '\r') {
+		password.push_back(ch);
+		cout<<'*';
+	}
+	
+	cout<<endl;
+	line();
+	cout << "Sign in berhasil! Silakan login...\n";
+	cout<<endl;
+}
+
+// menu log in
+bool logIn(const string &username, const string &password) {
+	string logUsn, logPass;
+	
+	do {
+		line();
+		cout<<"Log In\n";
+		line();
+		cout<<"Masukkan username: ";
+		cin>>logUsn;
+		cout<<"Masukkan password: ";
+		
+		char ch;
+		logPass.clear();
+		
+		while ((ch = _getch()) != '\r') {
+			logPass.push_back(ch);
+			cout<<'*';
+		}
+		cout<<endl;
+		line();
+		
+		if (logUsn == username && logPass == password) {
+			cout<<"Login berhasil.\n";
+			return true;
+		} else {
+			cout<<"Login gagal. Username atau password salah.\n";
+		}
+	} while (true);
+}
+
+// menu sign in dan log in
+void logNsign() {
+	int pil;
+	line();
+	cout<<"1. Sign In\n";
+	cout<<"2. Log In\n";
+	line();
+	cout<<"Pilih: ";
+	cin>>pil;
+	
+	string signUsn, signPass;
+	switch (pil) {
+		case 1: 
+			signIn(signUsn, signPass);
+			logIn(signUsn, signPass);
+			break;
+		case 2: 
+			cout << "Anda harus Sign In terlebih dahulu sebelum Log In.\n";
+			logNsign();
+			break;
+		default: 
+			cout<<"Invalid.\n";
+			logNsign();
+	}
+	
+	cout<<endl;
+}
+
+// jumlah max produk ==1000
+const int max_produk = 1000;
+
+// pengelompokkan variabel produk
 struct Produk {
     string namaProduk;
     double hargaProduk;
     int stokProduk;
 };
 
-Produk listProdukMakanan1[max_produkKering] = {
+// list produk
+Produk listProduk[max_produk] = {
     {"NOVA Rabbit Food 1kg", 38000, 10},
     {"Takari Fish Food 100gr", 10000, 30},
     {"CAT CHOIZE Adult Salmon 800g", 30000, 24},
@@ -25,16 +118,60 @@ Produk listProdukMakanan1[max_produkKering] = {
     {"FELIBITE CAT FOOD Salmon 500gr", 15000, 20},
     {"Meo Cat Food Persian 6.8kg", 346500, 1},
     {"Cattie Care Cat Food 20kg", 561000, 1},
-    {"UNIVERSAL WORLD PET KITTEN 20kg", 630000, 1}
+    {"UNIVERSAL WORLD PET KITTEN 20kg", 630000, 1},
+    {"Bolt Makanan Kering Kucing 20kg", 430000, 5},	
+	{"Cat Choize 20 kg", 480000, 5},
+	{"Life Cat Adult 10kg", 286000, 6},
+	{"Happy Cat Minkas Perfect Mix 10kg", 841900, 4},
+	{"BOLT PLUS 5kg", 170000, 5},
+	{"Santap Cat Food 5kg", 112800, 10},
+	{"Whiskas Pouch Adult Grilled Saba 85gr", 6900, 30},
+	{"Whiskas Pouch Adult Tuna 85gr", 7500, 40},
+	{"Royal Canin Kitten Instinctive Gravy 85gr", 22900, 35},
+	{"Royal Canin Adult Persian 85gr", 24900, 30},
+	{"Royal Canin Kitten Instinctive Jelly 85gr", 21000, 30},
+	{"Royal Canin Instinctive Gravy 85gr", 20000, 25},
+	{"Lofiecat Wet Food Kaleng Ocean Fish 400gr",	20000, 35},
+	{"Opti-One Red Tuna & Chicken & Seafood Stick 90gr", 20000, 20},
+	{"Sajo White Meat of Tuna 90gr", 14500, 25},
+	{"Super Cat Tuna & Minced Salmon (Kitten) 400gr", 23000, 27},
+	{"Super Cat Baby Tuna & Minced Chicken 400gr",	25000, 26},
+	{"Super Cat Baby Kitten Tuna 400gr", 25000, 23},
+	{"Super Cat Chicken & Vegetable 400gr",	23000, 20},
+	{"Super Cat Beef & Turkey 400gr", 23000, 23},
+	{"Super Cat Seafood Platter Supreme 400gr",	23000, 28},
+	{"Super Cat Ocean Fish 400gr", 23000, 20},
+	{"Super Cat Chicken & Tuna 400gr", 23000, 20},
+	{"Science Diet Cat R/D Weight Reduction Chicken Flavor 1.81kg",	355900, 10},
+	{"Purina Fancy Feast Wet Cat Food Variety Pack, Medleys White 85gr", 950000, 10},
+	{"Friskies Adult Meaty Grills 1.1kg", 69900, 20},
+	{"Purina One Cat Food Repacking 800gr",	99653, 10},
+	{"Me-O Adult Seafood 1.2kg", 64855, 20},
+	{"Cat Choize Adult Rasa Tuna 500gr", 28500, 20},
+	{"Royal Canin Exigent Aromatic Attraction 2kg",	315000, 20},
+	{"Royal Canin Mother & Babycat 4 kg", 640000, 20},
+	{"Me-O Adult Tuna 1.5kg", 65000, 20},
+	{"Me-O Adult Chicken 1.5kg", 65000, 20},
+	{"Me-O Kitten 1.5kg", 63000, 20},
+	{"Equilibrio Adult Cat 7.5kg", 500000, 20},
+	{"Equilibrio Kittens 1.5kg", 130000, 20},
+	{"Maxi Repack Chicken and Tuna 1kg", 25000, 20},
+	{"Maxi Repack Chicken and Tuna 2kg", 48000, 20},
+	{"Felibite Cat Food Freshpack 500gr", 13400, 35},
+	{"Felibite Cat Food 1.5kg", 40050, 38}
+
 };
 
-int jumlahProduk = 15;
+// jumlah produk yang terdapat dalam list produk
+int jumlahProduk = 55;
 
-void line() {
-    cout << "===========================================\n";
-}
-
+// fungsi untuk menambahkan produk baru
 void tambahProduk() {
+	if (jumlahProduk >= max_produk) {
+		cout<<">>> Kapasitas layanan penuh! Tidak bisa menambah lagi.\n";
+		return;
+	}
+	
     cin.ignore();
     string namaProduk;
     double hargaProduk;
@@ -47,25 +184,32 @@ void tambahProduk() {
     cout<<">>> Jumlah stok\t\t: ";
     cin>>stokProduk;
 
-    listProdukMakanan1[jumlahProduk].namaProduk = namaProduk;
-    listProdukMakanan1[jumlahProduk].hargaProduk = hargaProduk;
-    listProdukMakanan1[jumlahProduk].stokProduk = stokProduk;
+    listProduk[jumlahProduk].namaProduk = namaProduk;
+    listProduk[jumlahProduk].hargaProduk = hargaProduk;
+    listProduk[jumlahProduk].stokProduk = stokProduk;
     jumlahProduk++;
-
-    cout<<">>> Produk berhasil ditambahkan!\n";
+        
+    cout<<">>> Produk berhasil ditambahkan!\n";		
 }
 
+// fungsi untum menampilkan list produk
 void tampilkanProduk() {
     line();
     cout<<"DAFTAR PRODUK\n";
     line();
-    cout<<"| No | Nama Produk\t\t\t| Harga\t\t| Stok |\n";
-    cout<<"--------------------------------------------------------------\n";
-    for (int i=0; i<jumlahProduk; i++) {
-        cout<<"| "<<i+1<<" | "<<listProdukMakanan1[i].namaProduk<<"\t\t| Rp "<<listProdukMakanan1[i].hargaProduk<<" | "<<listProdukMakanan1[i].stokProduk<<" |\n";
-    }
+    cout<<left<<setw(5)<<"No"<<setw(50)<<"Nama Produk"<<setw(70)<<"Harga"<<setw(10)<<"Stok"<<endl;
+	cout<<string(70, '-')<<endl;
+
+	for (int i=0; i<jumlahProduk; i++) {
+    cout<<left<<setw(5)<<i+1
+        <<setw(70)<<listProduk[i].namaProduk
+        <<"Rp "<<setw(10)<<fixed<<setprecision(0)<<listProduk[i].hargaProduk
+        <<setw(10)<<listProduk[i].stokProduk
+        <<endl;
+	}
 }
 
+// fungsi untuk mengedit informasi produk
 void editProduk() {
     int indexEdit;
     cout << ">>> Masukkan Nomor Produk yang ingin diedit: ";
@@ -75,11 +219,11 @@ void editProduk() {
     if (indexEdit >= 0 && indexEdit < jumlahProduk) {
         cin.ignore();
         cout << ">>> Nama Produk Baru\t: ";
-        getline(cin, listProdukMakanan1[indexEdit].namaProduk);
+        getline(cin, listProduk[indexEdit].namaProduk);
         cout << ">>> Harga Baru (Rp)\t: ";
-        cin >> listProdukMakanan1[indexEdit].hargaProduk;
+        cin >> listProduk[indexEdit].hargaProduk;
         cout << ">>> Stok Baru\t\t: ";
-        cin >> listProdukMakanan1[indexEdit].stokProduk;
+        cin >> listProduk[indexEdit].stokProduk;
 
         cout << ">>> Data produk berhasil diperbarui!\n";
     } else {
@@ -87,9 +231,12 @@ void editProduk() {
     }
 }
 
+// fungsi untuk menghapus produk
 void hapusProduk() {
     int indexHapus;
     char konfirHapus;
+    tampilkanProduk();
+    cout<<endl;
 
     cout << ">>> Masukkan Nomor Produk yang ingin dihapus: ";
     cin >> indexHapus;
@@ -101,7 +248,7 @@ void hapusProduk() {
 
         if (konfirHapus == 'y' || konfirHapus == 'Y') {
             for (int i = indexHapus; i < jumlahProduk - 1; i++) {
-                listProdukMakanan1[i] = listProdukMakanan1[i + 1];
+                listProduk[i] = listProduk[i + 1];
             }
             jumlahProduk--;
             cout << ">>> Produk berhasil dihapus!\n";
@@ -113,6 +260,7 @@ void hapusProduk() {
     }
 }
 
+// fungsi untuk mencari produk
 void cariProduk() {
     string keyword;
     cin.ignore();
@@ -122,21 +270,25 @@ void cariProduk() {
     bool ditemukan = false;
     line();
     cout << "Hasil Pencarian:\n";
+    
     for (int i = 0; i < jumlahProduk; i++) {
-        if (listProdukMakanan1[i].namaProduk.find(keyword) != string::npos) {
-            cout << "- " << listProdukMakanan1[i].namaProduk
-                 << " | Rp " << listProdukMakanan1[i].hargaProduk
-                 << " | stok: " << listProdukMakanan1[i].stokProduk << "\n";
+        if (listProduk[i].namaProduk.find(keyword) != string::npos) {
+            cout << "- " << listProduk[i].namaProduk
+                 << " | Rp " << listProduk[i].hargaProduk
+                 << " | stok: " << listProduk[i].stokProduk << "\n";
             ditemukan = true;
         }
     }
+    
     if (!ditemukan) {
         cout << ">>> Produk tidak ditemukan.\n";
     }
 }
 
+// fungsi menu utama manajemen produk
 void menuManajemenProduk() {
     int pilMenu;
+    
     do {
     	cout<<endl;
         line();
@@ -153,38 +305,772 @@ void menuManajemenProduk() {
         cout<<endl;
 
         switch (pilMenu) {
-            case 1: tambahProduk(); break;
-            case 2: tampilkanProduk(); break;
-            case 3: editProduk(); break;
-            case 4: hapusProduk(); break;
-            case 5: cariProduk(); break;
-            case 6: cout << "Kembali ke menu utama...\n"; break;
-            default: cout << ">>> Pilihan tidak valid!\n"; break;
+            case 1: 
+				tambahProduk(); 
+				break;
+            case 2: 
+				tampilkanProduk(); 
+				break;
+            case 3: 
+				editProduk(); 
+				break;
+            case 4: 
+				hapusProduk(); 
+				break;
+            case 5: 
+				cariProduk(); 
+				break;
+            case 6: 
+				cout << "Kembali ke menu utama...\n"; 
+				break;
+            default: 
+				cout << ">>> Pilihan tidak valid!\n"; 
+				break;
         }
     } while (pilMenu != 6);
 }
 
-int main() {
-    int pilSistem;
+// jumlah max layanan
+const int max_layanan = 20;
 
+// pengelompokkan vaariabel layanan
+struct Layanan {
+	string namaLayanan;
+	double hargaLayanan;
+	string deskripsiLayanan;
+};
+
+// list layanan
+Layanan listLayanan[max_layanan] = {
+	{"Grooming Anjing Kecil", 75000, "Mandi, potong kuku, dan sisir bulu untuk anjing kecil (<10kg)"},
+	{"Grooming Anjing Besar", 120000, "Paket grooming lengkap untuk anjing besar"},
+	{"Grooming Kucing", 85000, "Mandi, potong kuku, dan sisir bulu untuk semua jenis kucing"},
+	{"Penitipan Harian Anjing", 50000, "Penitipan anjing per hari termasuk makanan dan bermain"},
+	{"Penitipan Harian Kucing", 40000, "Penitipan kucing per hari termasuk makanan dan kebersihan"},
+	{"Vaksin Rabies", 80000, "Vaksinasi rabies untuk kucing dan anjing"},
+	{"Vaksin Komplit Kucing", 150000, "Tricat / tetracat lengkap untuk kitten atau dewasa"},
+	{"Sterilisasi Kucing Jantan", 250000, "Steril jantan oleh dokter hewan terpercaya"},
+	{"Sterilisasi Kucing Betina", 400000, "Steril betina dengan tindakan operasi kecil"},
+	{"Cek Kesehatan Umum", 60000, "Pemeriksaan ringan kondisi umum hewan peliharaan"}
+};
+
+// jumlah layanan yang terdapat pada list layanan
+int jumlahLayanan = 10;
+
+// fungsi menambahkan layanan
+void tambahLayanan() {
+	if (jumlahLayanan >= max_layanan) {
+		cout<<">>> Kapasitas layanan penuh! Tidak bisa menambah lagi.\n";
+		return;
+	}
+	
+	cin.ignore();
+	string namaLayanan;
+	double hargaLayanan;
+	string deskripsiLayanan;
+	
+	cout<<">> Nama Layanan\t\t: ";
+	getline(cin, namaLayanan);
+	cout<<">>> Harga Layanan (Rp)\t: ";
+	cin>>hargaLayanan;
+	cin.ignore();
+	cout<<">>> Deskripsi Layanan\t: ";
+	getline(cin, deskripsiLayanan);
+	
+	listLayanan[jumlahLayanan].namaLayanan = namaLayanan;
+	listLayanan[jumlahLayanan].hargaLayanan = hargaLayanan;
+	listLayanan[jumlahLayanan].deskripsiLayanan = deskripsiLayanan;
+	jumlahLayanan++;
+	
+	cout<<">>> Layanan berhasil ditambahkan!\n";
+}
+
+// fungsi menampilkan layanan
+void tampilanLayanan() {
+	cout<<"DAFTAR LAYANAN\n";
+	cout<<left<<setw(5)<<"No"<<setw(30)<<"Nama Layanan"<<setw(15)<<"Harga"<<setw(50)<<"Deskripsi"<<endl;
+	cout<<string(100, '-')<<endl;
+	
+	for (int i = 0; i < jumlahLayanan; i++) {
+		cout<<setw(5)<<i+1
+			<<setw(30)<<listLayanan[i].namaLayanan
+			<<"Rp "<<setw(10)<<fixed<<setprecision(0)<<listLayanan[i].hargaLayanan
+			<<setw(50)<<listLayanan[i].deskripsiLayanan
+			<<endl;
+	}
+}
+
+// fungsi mengedit layanan
+void editLayanan() {
+	int indexEdit;
+	cout<<">>> Masukkan nomor layanan yang ingin diedit: ";
+	cin>>indexEdit;
+	indexEdit--;
+	
+	if (indexEdit >= 0 && indexEdit < jumlahLayanan) {
+		cin.ignore();
+		cout<<">>> Nama Layanan Baru\t: ";
+		getline(cin, listLayanan[indexEdit].namaLayanan);
+		cout<<">>> Harga Baru (Rp)\t: ";
+		cin>>listLayanan[indexEdit].hargaLayanan;
+		cin.ignore();
+		cout<<">>> Deskripsi Baru\t: ";
+		getline(cin, listLayanan[indexEdit].deskripsiLayanan);
+		
+		cout<<">>> Data layanan berhasil diperbarui!\n";
+	} else {
+		cout<<">>> Nomor layanan tidak ditemukan.\n";
+	}
+}
+
+// fungsi menghapus layanan
+void hapusLayanan() {
+	int indexHapus;
+	char konfirHapus;
+	tampilanLayanan();
+	cout<<endl;
+	
+	cout<<">>> Masukkan Nomor Layanan yang ingin dihapus: ";
+	cin>>indexHapus;
+	indexHapus--;
+	
+	if (indexHapus >= 0 && indexHapus < jumlahLayanan) {
+		cout<<">>> Apakah anda yakin ingin menghapus layanan ini? (y/n): ";
+		cin>>konfirHapus;
+		
+		if (konfirHapus == 'y' || konfirHapus == 'Y') {
+			for (int i = indexHapus; i < jumlahLayanan - 1; i++) {
+				listLayanan[i] = listLayanan[i + 1];
+			}
+			jumlahLayanan--;
+			cout<<">>> Layanan berhasil dihapus!\n";
+		} else {
+			cout<<">>> Penghapusan dibatalkan.\n";
+		}
+	} else {
+		cout<<">>> Nomor layanan tidak ditemukan.\n";
+	}
+}
+
+// fungsi menghapus layanan
+void cariLayanan() {
+	string keyword;
+	cin.ignore();
+	cout<<">>> Masukkan kata kunci nama layanan: ";
+	getline(cin, keyword);
+	
+	bool ditemukan = false;
+	cout<<"Hasil pencarian:\n";
+	
+	for (int i = 0; i < jumlahLayanan; i++) {
+		if (listLayanan[i].namaLayanan.find(keyword) != string::npos) {
+			cout<<"- "<<listLayanan[i].namaLayanan
+				<<" | Rp "<<listLayanan[i].hargaLayanan
+				<<" | Deskripsi: "<<listLayanan[i].deskripsiLayanan<<"\n";
+			ditemukan = true;
+		}
+	}
+	
+	if (!ditemukan) {
+		cout<<">>> Layanan tidak ditemukan.\n";
+	}
+}
+
+// fungsi menu utama manajemen layanan
+void menuManajemenLayanan() {
+	int pilMenu;
+	
+	do {
+		cout<<endl;
+		cout<<"====== MENU MANAJEMEN LAYANAN ======\n";
+		cout<<"1. Tambah Layanan\n";
+		cout<<"2. Lihat Semua Layanan\n";
+		cout<<"3. Edit Layanan\n";
+		cout<<"4. Hapus Layanan\n";
+		cout<<"5. Cari Layanan\n";
+		cout<<"6. Kembali ke Menu Utama\n";
+		cout<<"Pilih Menu: ";
+		cin>>pilMenu;
+		cout<<endl;
+		
+		switch (pilMenu) {
+			case 1: 
+				tambahLayanan(); 
+				break;
+			case 2: 
+				tampilanLayanan(); 
+				break;
+			case 3: 
+				editLayanan(); 
+				break;
+			case 4: 
+				hapusLayanan(); 
+				break;
+			case 5: 
+				cariLayanan(); 
+				break;
+			case 6: 
+				cout<<"Kembali ke menu utama...\n"; 
+				break;
+			default: 
+				cout<<">>> Pilihan tidak valid!\n"; 
+				break;
+		}
+	} while (pilMenu != 6);
+}
+
+// pengelompokkan variabel pelanggan
+struct Pelanggan {
+    int idPelanggan;
+    string nama;
+    string alamat;
+    string nomorTelepon;
+    string email;
+    int totalTransaksi;      // Jumlah transaksi yang sudah dilakukan
+    double totalPengeluaran; // Total uang yang sudah dibelanjakan
+};
+
+Pelanggan listPelanggan[1000]; // menampung 1000 pelanggan
+int jumlahPelanggan = 0; // jumlah awal pelanggan
+int nextIdPelanggan = 1;
+
+// menambahkan pelanggan
+void tambahPelanggan() {
+    Pelanggan p;
+    p.idPelanggan = nextIdPelanggan++;
+
+    cout << "Nama pelanggan: ";
+    cin.ignore(); // supaya getline bisa dipakai dengan baik setelah cin
+    getline(cin, p.nama);
+
+    cout << "Alamat: ";
+    getline(cin, p.alamat);
+
+    cout << "Nomor Telepon: ";
+    getline(cin, p.nomorTelepon);
+
+    cout << "Email: ";
+    getline(cin, p.email);
+
+    p.totalTransaksi = 0;
+    p.totalPengeluaran = 0.0;
+
+    listPelanggan[jumlahPelanggan++] = p;
+    cout << ">>> Pelanggan berhasil ditambahkan dengan ID " << p.idPelanggan << "\n";
+}
+
+// melihat semua pelanggan
+void lihatSemuaPelanggan() {
+    if (jumlahPelanggan == 0) {
+        cout << ">>> Belum ada data pelanggan.\n";
+        return;
+    }
+
+    cout << left << setw(5) << "ID"
+         << setw(25) << "Nama"
+         << setw(30) << "Alamat"
+         << setw(15) << "No. Telepon"
+         << setw(25) << "Email"
+         << setw(15) << "Transaksi"
+         << setw(20) << "Total Pengeluaran\n";
+
+    cout << string(135, '=') << endl;
+
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        cout << left << setw(5) << listPelanggan[i].idPelanggan
+             << setw(25) << listPelanggan[i].nama
+             << setw(30) << listPelanggan[i].alamat
+             << setw(15) << listPelanggan[i].nomorTelepon
+             << setw(25) << listPelanggan[i].email
+             << setw(15) << listPelanggan[i].totalTransaksi
+             << "Rp" << fixed << setprecision(0) << listPelanggan[i].totalPengeluaran << endl;
+    }
+}
+
+// mengedit informasi pelanggan
+void editDataPelanggan() {
+    int id;
+    cout << "Masukkan ID pelanggan yang ingin diedit: ";
+    cin >> id;
+
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        if (listPelanggan[i].idPelanggan == id) {
+            cin.ignore();
+
+            cout << "Nama baru (" << listPelanggan[i].nama << "): ";
+            string namaBaru;
+            getline(cin, namaBaru);
+            if (!namaBaru.empty()) listPelanggan[i].nama = namaBaru;
+
+            cout << "Alamat baru (" << listPelanggan[i].alamat << "): ";
+            string alamatBaru;
+            getline(cin, alamatBaru);
+            if (!alamatBaru.empty()) listPelanggan[i].alamat = alamatBaru;
+
+            cout << "Nomor Telepon baru (" << listPelanggan[i].nomorTelepon << "): ";
+            string teleponBaru;
+            getline(cin, teleponBaru);
+            if (!teleponBaru.empty()) listPelanggan[i].nomorTelepon = teleponBaru;
+
+            cout << "Email baru (" << listPelanggan[i].email << "): ";
+            string emailBaru;
+            getline(cin, emailBaru);
+            if (!emailBaru.empty()) listPelanggan[i].email = emailBaru;
+
+            cout << ">>> Data pelanggan berhasil diperbarui.\n";
+            return;
+        }
+    }
+    cout << ">>> Pelanggan dengan ID tersebut tidak ditemukan.\n";
+}
+
+// menghapus pelanggan
+void hapusPelanggan() {
+	lihatSemuaPelanggan();
+	
+    int id;
+    cout << "Masukkan ID pelanggan yang ingin dihapus: ";
+    cin >> id;
+
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        if (listPelanggan[i].idPelanggan == id) {
+            for (int j = i; j < jumlahPelanggan - 1; j++) {
+                listPelanggan[j] = listPelanggan[j + 1];
+            }
+            jumlahPelanggan--;
+            cout << ">>> Pelanggan berhasil dihapus.\n";
+            return;
+        }
+    }
+    cout << ">>> Pelanggan dengan ID tersebut tidak ditemukan.\n";
+}
+
+// mencari pelanggan
+void cariPelanggan() {
+    cout << "Cari berdasarkan:\n1. ID\n2. Nama\nPilih: ";
+    int pilih;
+    cin >> pilih;
+    cin.ignore();
+
+    if (pilih == 1) {
+        int id;
+        cout << "Masukkan ID pelanggan: ";
+        cin >> id;
+
+        for (int i = 0; i < jumlahPelanggan; i++) {
+            if (listPelanggan[i].idPelanggan == id) {
+                cout << "Pelanggan ditemukan:\n";
+                cout << "ID: " << listPelanggan[i].idPelanggan << "\nNama: " << listPelanggan[i].nama 
+                     << "\nAlamat: " << listPelanggan[i].alamat << "\nNo. Telepon: " << listPelanggan[i].nomorTelepon
+                     << "\nEmail: " << listPelanggan[i].email << endl;
+                return;
+            }
+        }
+        cout << ">>> Tidak ditemukan pelanggan dengan ID tersebut.\n";
+
+    } else if (pilih == 2) {
+        string namaCari;
+        cout << "Masukkan nama pelanggan: ";
+        getline(cin, namaCari);
+
+        bool found = false;
+        for (int i = 0; i < jumlahPelanggan; i++) {
+            if (listPelanggan[i].nama.find(namaCari) != string::npos) {
+                cout << "ID: " << listPelanggan[i].idPelanggan << " | Nama: " << listPelanggan[i].nama << endl;
+                found = true;
+            }
+        }
+        if (!found) cout << ">>> Tidak ditemukan pelanggan dengan nama tersebut.\n";
+
+    } else {
+        cout << ">>> Pilihan tidak valid.\n";
+    }
+}
+
+// memilih pelanggan berdasarkan ID-nya dari daftar pelanggan yang telah terdaftar sebelumnya
+int pilihPelanggan() {
+    if (jumlahPelanggan == 0) {
+        cout << ">>> Belum ada pelanggan terdaftar. Tambah pelanggan terlebih dahulu.\n";
+        return -1;
+    }
+
+    cout << "Pilih pelanggan berdasarkan ID:\n";
+    lihatSemuaPelanggan();
+
+    int id;
+    cout << "Masukkan ID pelanggan: ";
+    cin >> id;
+
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        if (listPelanggan[i].idPelanggan == id) {
+            return id;
+        }
+    }
+    cout << ">>> Pelanggan tidak ditemukan.\n";
+    return -1;
+}
+
+// pengelompokkan variabel data transaksi
+struct DataTransaksi {
+	int idPelanggan; // ID pelanggan yang melakukan transaksi
+    string namaItem;
+    string jenisItem; // Produk atau Layanan
+    int jumlah; // produk
+    double hargaSatuan;
+    double total;
+    string waktu;
+};
+
+DataTransaksi riwayatTransaksi[1000]; // menampung 1000 data transaksi
+int totalTransaksi = 0;
+
+// fungsi untuk mengambil waktu saat transaksi dilakukan
+string waktuSekarang() {
+	time_t sekarang = time(0);
+	tm *ltm = localtime(&sekarang);
+	char buffer[30];
+	strftime(buffer, sizeof(buffer), "%y-%m-%d %H:%M:%S", ltm);
+	return string(buffer);
+}
+
+// fungsi proses transaksi prosuk
+void prosesTransaksiProduk() {
+    int idPelanggan = pilihPelanggan();
+    if (idPelanggan == -1) return;
+
+    tampilkanProduk();
+
+    int no, qty;
+    cout << "Pilih produk (nomor): ";
+    cin >> no;
+
+    if (no < 1 || no > jumlahProduk) {
+        cout << ">>> Produk tidak ditemukan!\n";
+        return;
+    }
+
+    cout << "Jumlah beli: ";
+    cin >> qty;
+
+    if (qty > listProduk[no - 1].stokProduk) {
+        cout << ">>> Stok tidak cukup!\n";
+        return;
+    }
+
+    listProduk[no - 1].stokProduk -= qty;
+
+    DataTransaksi t;
+    t.idPelanggan = idPelanggan;
+    t.namaItem = listProduk[no - 1].namaProduk;
+    t.jenisItem = "Produk";
+    t.jumlah = qty;
+    t.hargaSatuan = listProduk[no - 1].hargaProduk;
+    t.total = qty * t.hargaSatuan;
+    t.waktu = waktuSekarang();
+
+    riwayatTransaksi[totalTransaksi++] = t;
+
+    // Update data pelanggan
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        if (listPelanggan[i].idPelanggan == idPelanggan) {
+            listPelanggan[i].totalTransaksi++;
+            listPelanggan[i].totalPengeluaran += t.total;
+            break;
+        }
+    }
+
+    cout << ">>> Transaksi produk berhasil!\n";
+}
+
+// proses transaksi layanan
+void prosesTransaksiLayanan() {
+    int idPelanggan = pilihPelanggan();
+    if (idPelanggan == -1) return;
+
+    tampilanLayanan();
+
+    int no;
+    cout << "Pilih layanan (nomor): ";
+    cin >> no;
+
+    if (no < 1 || no > jumlahLayanan) {
+        cout << ">>> Layanan tidak ditemukan!\n";
+        return;
+    }
+
+    DataTransaksi t;
+    t.idPelanggan = idPelanggan;
+    t.namaItem = listLayanan[no - 1].namaLayanan;
+    t.jenisItem = "Layanan";
+    t.jumlah = 1;
+    t.hargaSatuan = listLayanan[no - 1].hargaLayanan;
+    t.total = t.hargaSatuan;
+    t.waktu = waktuSekarang();
+
+    riwayatTransaksi[totalTransaksi++] = t;
+
+    // Update data pelanggan
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        if (listPelanggan[i].idPelanggan == idPelanggan) {
+            listPelanggan[i].totalTransaksi++;
+            listPelanggan[i].totalPengeluaran += t.total;
+            break;
+        }
+    }
+
+    cout << ">>> Transaksi layanan berhasil!\n";
+}
+
+// fungsi menambahkan transaksi
+void tambahTransaksi() {
+    int pilihan;
+    cout << "\n=== Buat Transaksi Baru ===\n";
+    cout << "1. Produk\n";
+    cout << "2. Layanan\n";
+    cout << "Pilih jenis transaksi: ";
+    cin >> pilihan;
+
+    if (pilihan == 1)
+        prosesTransaksiProduk();
+    else if (pilihan == 2)
+        prosesTransaksiLayanan();
+    else
+        cout << ">>> Pilihan tidak valid!\n";
+}
+
+// menampilkan riwayat transaksi
+void lihatRiwayatTransaksi() {
+    if (totalTransaksi == 0) {
+        cout << "\n>>> Belum ada transaksi.\n";
+        return;
+    }
+
+    cout << "\n=== Riwayat Transaksi ===\n";
+    cout << left << setw(5) << "No"
+         << setw(12) << "Jenis"
+         << setw(25) << "Nama"
+         << setw(10) << "Jumlah"
+         << setw(15) << "Harga"
+         << setw(15) << "Total"
+         << "Waktu\n";
+    cout << string(90, '-') << endl;
+
+    for (int i = 0; i < totalTransaksi; i++) {
+        cout << left << setw(5) << i + 1
+             << setw(12) << riwayatTransaksi[i].jenisItem
+             << setw(25) << riwayatTransaksi[i].namaItem
+             << setw(10) << riwayatTransaksi[i].jumlah
+             << "Rp" << setw(12) << fixed << setprecision(0) << riwayatTransaksi[i].hargaSatuan
+             << "Rp" << setw(12) << fixed << setprecision(0) << riwayatTransaksi[i].total
+             << riwayatTransaksi[i].waktu << endl;
+    }
+}
+
+// melihat riwayat pelanggan
+void lihatRiwayatPerPelanggan() {
+    int id = pilihPelanggan();
+    if (id == -1) return;
+
+    cout << "\n=== Riwayat Transaksi Pelanggan ID " << id << " ===\n";
+
+    bool adaTransaksi = false;
+    for (int i = 0; i < totalTransaksi; i++) {
+        if (riwayatTransaksi[i].idPelanggan == id) {
+            adaTransaksi = true;
+            cout << "Item: " << riwayatTransaksi[i].namaItem
+                 << ", Jenis: " << riwayatTransaksi[i].jenisItem
+                 << ", Jumlah: " << riwayatTransaksi[i].jumlah
+                 << ", Total: Rp" << fixed << setprecision(0) << riwayatTransaksi[i].total
+                 << ", Waktu: " << riwayatTransaksi[i].waktu << endl;
+        }
+    }
+
+    if (!adaTransaksi) cout << ">>> Tidak ada transaksi untuk pelanggan ini.\n";
+}
+
+// menu utama transaksi
+void menuTransaksi() {
+    int pilih;
+    do {
+        cout << "\n=== Menu Transaksi ===\n";
+        cout << "1. Tambah Transaksi\n";
+        cout << "2. Lihat Riwayat Transaksi\n";
+        cout << "3. Kembali\n";
+        cout << "Pilih: ";
+        cin >> pilih;
+
+        switch (pilih) {
+            case 1: tambahTransaksi(); break;
+            case 2: lihatRiwayatTransaksi(); break;
+            case 3: cout << "Kembali ke menu utama...\n"; break;
+            default: cout << ">>> Pilihan tidak valid!\n"; break;
+        }
+    } while (pilih != 3);
+}
+
+// menu utama pelanggan
+void menuPelanggan() {
+    int pilih;
+    do {
+        cout << "\n=== Menu Pelanggan ===\n";
+        cout << "1. Tambah Pelanggan\n";
+        cout << "2. Lihat Semua Pelanggan\n";
+        cout << "3. Edit Data Pelanggan\n";
+        cout << "4. Hapus Pelanggan\n";
+        cout << "5. Cari Pelanggan\n";
+        cout << "6. Lihat Riwayat Transaksi Per Pelanggan\n";
+        cout << "7. Kembali\n";
+        cout << "Pilih: ";
+        cin >> pilih;
+
+        switch (pilih) {
+            case 1: tambahPelanggan(); break;
+            case 2: lihatSemuaPelanggan(); break;
+            case 3: editDataPelanggan(); break;
+            case 4: hapusPelanggan(); break;
+            case 5: cariPelanggan(); break;
+            case 6: lihatRiwayatPerPelanggan(); break;
+            case 7: cout << "Kembali ke menu utama...\n"; break;
+            default: cout << ">>> Pilihan tidak valid!\n"; break;
+        }
+    } while (pilih != 7);
+}
+
+// laporan penjualan
+void laporanTotalPenjualan() {
+    double total = 0;
+    int totalTransaksiCount = 0;
+
+    for (int i = 0; i < totalTransaksi; i++) {
+        total += riwayatTransaksi[i].total;
+        totalTransaksiCount++;
+    }
+
+    cout << "=== Laporan Total Penjualan ===\n";
+    cout << "Jumlah Transaksi: " << totalTransaksiCount << endl;
+    cout << "Total Pendapatan: Rp" << fixed << setprecision(0) << total << endl;
+}
+
+// laporan penjualan per produk
+void laporanPenjualanPerProduk() {
+    cout << "=== Laporan Penjualan Per Produk ===\n";
+
+    for (int i = 0; i < jumlahProduk; i++) {
+        int totalQty = 0;
+        double totalPendapatan = 0;
+
+        for (int j = 0; j < totalTransaksi; j++) {
+            if (riwayatTransaksi[j].jenisItem == "Produk" && riwayatTransaksi[j].namaItem == listProduk[i].namaProduk) {
+                totalQty += riwayatTransaksi[j].jumlah;
+                totalPendapatan += riwayatTransaksi[j].total;
+            }
+        }
+
+        if (totalQty > 0) {
+            cout << "Produk: " << listProduk[i].namaProduk << "\n";
+            cout << "Jumlah Terjual: " << totalQty << "\n";
+            cout << "Pendapatan: Rp" << fixed << setprecision(0) << totalPendapatan << "\n\n";
+        }
+    }
+}
+
+// laporan penjualan per layanan
+void laporanPenjualanPerLayanan() {
+    cout << "=== Laporan Penjualan Per Layanan ===\n";
+
+    for (int i = 0; i < jumlahLayanan; i++) {
+        int totalQty = 0;
+        double totalPendapatan = 0;
+
+        for (int j = 0; j < totalTransaksi; j++) {
+            if (riwayatTransaksi[j].jenisItem == "Layanan" && riwayatTransaksi[j].namaItem == listLayanan[i].namaLayanan) {
+                totalQty += riwayatTransaksi[j].jumlah;
+                totalPendapatan += riwayatTransaksi[j].total;
+            }
+        }
+
+        if (totalQty > 0) {
+            cout << "Layanan: " << listLayanan[i].namaLayanan << "\n";
+            cout << "Jumlah Terjual: " << totalQty << "\n";
+            cout << "Pendapatan: Rp" << fixed << setprecision(0) << totalPendapatan << "\n\n";
+        }
+    }
+}
+
+// menu utama laporan penjualan
+void menuLaporanPenjualan() {
+    int pilih;
+    do {
+        cout << "\n=== Menu Laporan Penjualan ===\n";
+        cout << "1. Laporan Total Penjualan\n";
+        cout << "2. Laporan Penjualan Per Produk\n";
+        cout << "3. Laporan Penjualan Per Layanan\n";
+        cout << "4. Kembali\n";
+        cout << "Pilih: ";
+        cin >> pilih;
+
+        switch (pilih) {
+            case 1: 
+				laporanTotalPenjualan(); 
+				break;
+            case 2: 
+				laporanPenjualanPerProduk(); 
+				break;
+            case 3: 
+				laporanPenjualanPerLayanan(); 
+				break;
+            case 4: 
+				cout << "Kembali ke menu utama...\n"; 
+				break;
+            default: 
+				cout << ">>> Pilihan tidak valid!\n"; 
+				break;
+        }
+    } while (pilih != 4);
+}
+
+
+int main() {
+	logNsign();
+	
+    int pilSistem;
     do {
         line();
         cout << "SISTEM MANAJEMEN TOKO PERAWATAN HEWAN\n";
         line();
         cout << "1. Manajemen Produk\n";
         cout << "2. Manajemen Layanan\n";
-        cout << "3. Keluar\n";
+        cout << "3. Pelanggan\n";
+        cout << "4. Transaksi\n";
+        cout << "5. Laporan Penjualan\n";
+        cout << "6. Keluar\n";
         cout << "Pilih Sistem: ";
         cin >> pilSistem;
         cout<<endl;
 
         switch (pilSistem) {
-            case 1: menuManajemenProduk(); break;
-            case 2: cout << ">>> Fitur layanan belum tersedia.\n"; break;
-            case 3: cout << ">>> Terima kasih telah menggunakan sistem.\n"; break;
-            default: cout << ">>> Pilihan tidak valid!\n"; break;
-        }
-    } while (pilSistem != 3);
+            case 1:
+				menuManajemenProduk();
+				break;
+			case 2:
+				menuManajemenLayanan();
+				break;
+			case 3:
+				menuPelanggan();
+				break;
+			case 4: 
+				menuTransaksi();
+				break;
+			case 5: 
+				menuLaporanPenjualan();
+				break;
+			case 6:
+				cout << "Terimakasih telah mengguanakan program ini.\n";
+				break;
+			default:
+				cout << ">>> Pilihan tidak valid!\n";
+		}
+    } while (pilSistem != 6);
 
     return 0;
 }
