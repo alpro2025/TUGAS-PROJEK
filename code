@@ -8,7 +8,7 @@ using namespace std;
 
 // output garis
 void line() {
-    cout << "===========================================\n";
+    cout << "----------------------------------------------------\n";
 }
 
 // menu sign in
@@ -19,7 +19,7 @@ void signIn(string &username, string &password) {
 	cout<<"Masukkan username: ";
 	cin>>username;
 	cout<<"Masukkan password: ";
-	
+
 	char ch;
 	password.clear();
 	
@@ -74,6 +74,7 @@ void logNsign() {
 	line();
 	cout<<"Pilih: ";
 	cin>>pil;
+	cout<<endl;
 	
 	string signUsn, signPass;
 	switch (pil) {
