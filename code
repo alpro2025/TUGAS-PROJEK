@@ -80,11 +80,14 @@ void logNsign() {
 	switch (pil) {
 		case 1: 
 			signIn(signUsn, signPass);
+			system("cls");
 			logIn(signUsn, signPass);
+			system("cls");
 			break;
 		case 2: 
 			cout << "Anda harus Sign In terlebih dahulu sebelum Log In.\n";
 			logNsign();
+			system("cls");
 			break;
 		default: 
 			cout<<"Invalid.\n";
@@ -194,14 +197,31 @@ void tambahProduk() {
     cout<<">>> Produk berhasil ditambahkan!\n";		
 }
 
+void insertionSort(Produk listProduk[], int n) {
+    for (int i = 1; i < n; i++) {
+        Produk key = listProduk[i];
+        int j = i - 1;
+        
+        // Pindahkan elemen yang lebih besar dari key ke satu posisi di depan
+        while (j >= 0 && listProduk[j].namaProduk > key.namaProduk) {
+            listProduk[j + 1] = listProduk[j];
+            j--;
+        }
+        listProduk[j + 1] = key;
+    }
+}
+
 // fungsi untum menampilkan list produk
 void tampilkanProduk() {
     line();
     cout<<"DAFTAR PRODUK\n";
     line();
-    cout<<left<<setw(5)<<"No"<<setw(50)<<"Nama Produk"<<setw(70)<<"Harga"<<setw(10)<<"Stok"<<endl;
+    cout<<left<<setw(5)<<"No"<<setw(50)<<"Nama Produk"<<setw(90)<<"Harga"<<setw(10)<<"Stok"<<endl;
 	cout<<string(70, '-')<<endl;
 
+	int n = sizeof(listProduk) / sizeof(listProduk[0]);
+	insertionSort(listProduk, jumlahProduk);
+	
 	for (int i=0; i<jumlahProduk; i++) {
     cout<<left<<setw(5)<<i+1
         <<setw(70)<<listProduk[i].namaProduk
@@ -287,6 +307,34 @@ void cariProduk() {
     }
 }
 
+// fungsi searching stok produk dengan linear
+void cariProdukStokRendah() {
+    int batasStok;
+    cout << ">>> Masukkan batas maksimal stok produk: ";
+    cin >> batasStok;
+
+    bool ditemukan = false;
+    line();
+    cout << "DAFTAR PRODUK DENGAN STOK <= " << batasStok << "\n";
+    line();
+    cout << left << setw(5) << "No" << setw(50) << "Nama Produk" << setw(15) << "Harga" << setw(10) << "Stok" << endl;
+    cout << string(80, '-') << endl;
+
+    for (int i = 0, no = 1; i < jumlahProduk; i++) {
+        if (listProduk[i].stokProduk <= batasStok) {
+            cout << setw(5) << no++
+                 << setw(50) << listProduk[i].namaProduk
+                 << "Rp " << setw(10) << fixed << setprecision(0) << listProduk[i].hargaProduk
+                 << setw(10) << listProduk[i].stokProduk << endl;
+            ditemukan = true;
+        }
+    }
+
+    if (!ditemukan) {
+        cout << ">>> Tidak ada produk dengan stok kurang dari atau sama dengan " << batasStok << ".\n";
+    }
+}
+
 // fungsi menu utama manajemen produk
 void menuManajemenProduk() {
     int pilMenu;
@@ -301,7 +349,8 @@ void menuManajemenProduk() {
         cout << "3. Edit Produk\n";
         cout << "4. Hapus Produk\n";
         cout << "5. Cari Produk\n";
-        cout << "6. Kembali ke Menu Utama\n";
+        cout << "6. Cari Produk Berdasarkan Stok Rendah\n";
+        cout << "7. Kembali ke Menu Utama\n";
         cout << "Pilih menu: ";
         cin >> pilMenu;
         cout<<endl;
@@ -309,20 +358,28 @@ void menuManajemenProduk() {
         switch (pilMenu) {
             case 1: 
 				tambahProduk(); 
+				system("cls");
 				break;
             case 2: 
 				tampilkanProduk(); 
 				break;
             case 3: 
 				editProduk(); 
+				system("cls");
 				break;
             case 4: 
 				hapusProduk(); 
+				system("cls");
 				break;
             case 5: 
 				cariProduk(); 
+				system("cls");
 				break;
-            case 6: 
+			case 6:
+				cariProdukStokRendah();
+				system("cls");
+				break;
+            case 7: 
 				cout << "Kembali ke menu utama...\n"; 
 				break;
             default: 
@@ -387,11 +444,28 @@ void tambahLayanan() {
 	cout<<">>> Layanan berhasil ditambahkan!\n";
 }
 
+void insertionSortLayanan(Layanan listLayanan[], int n) {
+    for (int i = 1; i < n; i++) {
+        Layanan key = listLayanan[i];
+        int j = i - 1;
+        
+        // Pindahkan elemen yang lebih besar dari key ke satu posisi di depan
+        while (j >= 0 && listLayanan[j].namaLayanan > key.namaLayanan) {
+            listLayanan[j + 1] = listLayanan[j];
+            j--;
+        }
+        listLayanan[j + 1] = key;
+    }
+}
+
 // fungsi menampilkan layanan
 void tampilanLayanan() {
 	cout<<"DAFTAR LAYANAN\n";
 	cout<<left<<setw(5)<<"No"<<setw(30)<<"Nama Layanan"<<setw(15)<<"Harga"<<setw(50)<<"Deskripsi"<<endl;
 	cout<<string(100, '-')<<endl;
+	
+	int n = sizeof(listProduk) / sizeof(listProduk[0]);
+	insertionSort(listProduk, jumlahProduk);
 	
 	for (int i = 0; i < jumlahLayanan; i++) {
 		cout<<setw(5)<<i+1
@@ -454,7 +528,7 @@ void hapusLayanan() {
 	}
 }
 
-// fungsi menghapus layanan
+// fungsi cari layanan
 void cariLayanan() {
 	string keyword;
 	cin.ignore();
