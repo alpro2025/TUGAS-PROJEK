@@ -535,8 +535,8 @@ void tampilanLayanan() {
 	cout<<left<<setw(5)<<"No"<<setw(30)<<"Nama Layanan"<<setw(15)<<"Harga"<<setw(50)<<"Deskripsi"<<endl;
 	cout<<string(100, '-')<<endl;
 	
-	int n = sizeof(listProduk) / sizeof(listProduk[0]);
-	insertionSort(listProduk, jumlahProduk);
+	int n = sizeof(listLayanan) / sizeof(listLayanan[0]);
+	insertionSort(listLayanan, listLayanan);
 	
 	for (int i = 0; i < jumlahLayanan; i++) {
 		cout<<setw(5)<<i+1
