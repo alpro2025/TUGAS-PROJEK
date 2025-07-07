@@ -8,7 +8,30 @@ using namespace std;
 
 // output garis
 void line() {
-    cout << "----------------------------------------------------\n";
+    cout << "-------------------------------------------------------------------------------------------------\n";
+}
+
+
+void simpanAkunKeFile(const string &username, const string &password) {
+    ofstream file("akun.txt");
+    if (file.is_open()) {
+        file << username << endl;
+        file << password << endl;
+        file.close();
+    } else {
+        cout << "Gagal menyimpan akun ke file.\n";
+    }
+}
+
+bool bacaAkunDariFile(string &username, string &password) {
+    ifstream file("akun.txt");
+    if (file.is_open()) {
+        getline(file, username);
+        getline(file, password);
+        file.close();
+        return true;
+    }
+    return false;
 }
 
 // menu sign in
@@ -27,75 +50,87 @@ void signIn(string &username, string &password) {
 		password.push_back(ch);
 		cout<<'*';
 	}
+	cout<<endl;
 	
-	cout<<endl;
-	line();
-	cout << "Sign in berhasil! Silakan login...\n";
-	cout<<endl;
+	simpanAkunKeFile(username, password); // simpan ke file
+    line();
+    cout << "Sign in berhasil! Akun disimpan.\n\n";
+    getch();
 }
 
 // menu log in
 bool logIn(const string &username, const string &password) {
-	string logUsn, logPass;
-	
-	do {
-		line();
-		cout<<"Log In\n";
-		line();
-		cout<<"Masukkan username: ";
-		cin>>logUsn;
-		cout<<"Masukkan password: ";
-		
-		char ch;
-		logPass.clear();
-		
-		while ((ch = _getch()) != '\r') {
-			logPass.push_back(ch);
-			cout<<'*';
-		}
-		cout<<endl;
-		line();
-		
-		if (logUsn == username && logPass == password) {
-			cout<<"Login berhasil.\n";
-			return true;
-		} else {
-			cout<<"Login gagal. Username atau password salah.\n";
-		}
-	} while (true);
+    string logUsn, logPass;
+
+    do {
+        line();
+        cout << "Log In\n";
+        line();
+        cout << "Masukkan username: ";
+        cin >> logUsn;
+        cout << "Masukkan password: ";
+
+        char ch;
+        logPass.clear();
+        while ((ch = _getch()) != '\r') {
+            logPass.push_back(ch);
+            cout << '*';
+        }
+        cout << endl;
+
+        if (logUsn == username && logPass == password) {
+            cout << "Login berhasil.\n";
+            return true;
+        } else {
+            cout << "Login gagal. Username atau password salah.\n";
+            getch();
+            system("cls");
+        }
+    } while (true);
 }
 
 // menu sign in dan log in
 void logNsign() {
-	int pil;
-	line();
-	cout<<"1. Sign In\n";
-	cout<<"2. Log In\n";
-	line();
-	cout<<"Pilih: ";
-	cin>>pil;
-	cout<<endl;
-	
-	string signUsn, signPass;
-	switch (pil) {
-		case 1: 
-			signIn(signUsn, signPass);
-			system("cls");
-			logIn(signUsn, signPass);
-			system("cls");
-			break;
-		case 2: 
-			cout << "Anda harus Sign In terlebih dahulu sebelum Log In.\n";
-			logNsign();
-			system("cls");
-			break;
-		default: 
-			cout<<"Invalid.\n";
-			logNsign();
-	}
-	
-	cout<<endl;
+    string username, password;
+    int pil;
+
+    while (true) {
+        line();
+        cout << "1. Sign In\n";
+        cout << "2. Log In\n";
+        line();
+        cout << "Pilih: ";
+        cin >> pil;
+
+        if (cin.fail()) {
+            cin.clear(); // membersihkan error flag
+            cin.ignore(10000, '\n'); // buang sisa input
+            cout << ">>> Input tidak valid. Masukkan angka 1 atau 2.\n\n";
+            continue;
+        }
+
+        system("cls");
+
+        if (pil == 1) {
+            signIn(username, password);
+            system("cls");
+            logIn(username, password);
+            system("cls");
+            break;
+        } else if (pil == 2) {
+            if (bacaAkunDariFile(username, password)) {
+                logIn(username, password);
+                system("cls");
+                break;
+            } else {
+                cout << ">>> Belum ada akun. Silakan Sign In terlebih dahulu.\n\n";
+            }
+        } else {
+            cout << ">>> Pilihan tidak tersedia. Masukkan angka 1 atau 2.\n\n";
+        }
+    }
 }
+
 
 // jumlah max produk ==1000
 const int max_produk = 1000;
@@ -170,6 +205,16 @@ Produk listProduk[max_produk] = {
 // jumlah produk yang terdapat dalam list produk
 int jumlahProduk = 55;
 
+void simpanDataProduk() {
+    ofstream file("produk.txt");
+    for (int i = 0; i < jumlahProduk; i++) {
+        file << listProduk[i].namaProduk << "|"
+             << listProduk[i].hargaProduk << "|"
+             << listProduk[i].stokProduk << "\n";
+    }
+    file.close();
+}
+
 // fungsi untuk menambahkan produk baru
 void tambahProduk() {
 	if (jumlahProduk >= max_produk) {
@@ -181,7 +226,8 @@ void tambahProduk() {
     string namaProduk;
     double hargaProduk;
     int stokProduk;
-
+	
+	cout<<"====== TAMBAH PRODUK ======\n";
     cout<<">>> Nama Produk\t\t: ";
     getline(cin, namaProduk);
     cout<<">>> Harga Produk (Rp)\t: ";
@@ -195,6 +241,7 @@ void tambahProduk() {
     jumlahProduk++;
         
     cout<<">>> Produk berhasil ditambahkan!\n";		
+    simpanDataProduk();
 }
 
 void insertionSort(Produk listProduk[], int n) {
@@ -216,8 +263,11 @@ void tampilkanProduk() {
     line();
     cout<<"DAFTAR PRODUK\n";
     line();
-    cout<<left<<setw(5)<<"No"<<setw(50)<<"Nama Produk"<<setw(90)<<"Harga"<<setw(10)<<"Stok"<<endl;
-	cout<<string(70, '-')<<endl;
+    cout<<left<<setw(5)<<"No"
+		<<setw(50)<<"Nama Produk"
+		<<setw(120)<<"Harga"
+		<<setw(10)<<"Stok"<<endl;
+	line();
 
 	int n = sizeof(listProduk) / sizeof(listProduk[0]);
 	insertionSort(listProduk, jumlahProduk);
@@ -225,14 +275,17 @@ void tampilkanProduk() {
 	for (int i=0; i<jumlahProduk; i++) {
     cout<<left<<setw(5)<<i+1
         <<setw(70)<<listProduk[i].namaProduk
-        <<"Rp "<<setw(10)<<fixed<<setprecision(0)<<listProduk[i].hargaProduk
+        <<"Rp "<<setw(12)<<fixed<<setprecision(0)<<listProduk[i].hargaProduk
         <<setw(10)<<listProduk[i].stokProduk
         <<endl;
 	}
+	simpanDataProduk();
 }
 
 // fungsi untuk mengedit informasi produk
 void editProduk() {
+	tampilkanProduk();
+	
     int indexEdit;
     cout << ">>> Masukkan Nomor Produk yang ingin diedit: ";
     cin >> indexEdit;
@@ -248,6 +301,7 @@ void editProduk() {
         cin >> listProduk[indexEdit].stokProduk;
 
         cout << ">>> Data produk berhasil diperbarui!\n";
+        simpanDataProduk();
     } else {
         cout << ">>> Nomor produk tidak ditemukan.\n";
     }
@@ -274,6 +328,7 @@ void hapusProduk() {
             }
             jumlahProduk--;
             cout << ">>> Produk berhasil dihapus!\n";
+            simpanDataProduk();
         } else {
             cout << ">>> Penghapusan dibatalkan.\n";
         }
@@ -362,6 +417,8 @@ void menuManajemenProduk() {
 				break;
             case 2: 
 				tampilkanProduk(); 
+				getch();
+				system("cls");
 				break;
             case 3: 
 				editProduk(); 
@@ -373,10 +430,12 @@ void menuManajemenProduk() {
 				break;
             case 5: 
 				cariProduk(); 
+				getch();
 				system("cls");
 				break;
 			case 6:
 				cariProdukStokRendah();
+				getch();
 				system("cls");
 				break;
             case 7: 
@@ -386,7 +445,7 @@ void menuManajemenProduk() {
 				cout << ">>> Pilihan tidak valid!\n"; 
 				break;
         }
-    } while (pilMenu != 6);
+    } while (pilMenu != 7);
 }
 
 // jumlah max layanan
@@ -416,6 +475,16 @@ Layanan listLayanan[max_layanan] = {
 // jumlah layanan yang terdapat pada list layanan
 int jumlahLayanan = 10;
 
+void simpanDataLayanan() {
+    ofstream file("layanan.txt");
+    for (int i = 0; i < jumlahLayanan; i++) {
+        file << listLayanan[i].namaLayanan << "|"
+             << listLayanan[i].hargaLayanan << "|"
+             << listLayanan[i].deskripsiLayanan << "\n";
+    }
+    file.close();
+}
+
 // fungsi menambahkan layanan
 void tambahLayanan() {
 	if (jumlahLayanan >= max_layanan) {
@@ -428,6 +497,7 @@ void tambahLayanan() {
 	double hargaLayanan;
 	string deskripsiLayanan;
 	
+	cout<<"====== TAMBAH LAYANAN ======\n";
 	cout<<">> Nama Layanan\t\t: ";
 	getline(cin, namaLayanan);
 	cout<<">>> Harga Layanan (Rp)\t: ";
@@ -442,6 +512,7 @@ void tambahLayanan() {
 	jumlahLayanan++;
 	
 	cout<<">>> Layanan berhasil ditambahkan!\n";
+	simpanDataLayanan();
 }
 
 void insertionSortLayanan(Layanan listLayanan[], int n) {
@@ -474,10 +545,13 @@ void tampilanLayanan() {
 			<<setw(50)<<listLayanan[i].deskripsiLayanan
 			<<endl;
 	}
+	simpanDataLayanan();
 }
 
 // fungsi mengedit layanan
 void editLayanan() {
+	tampilanLayanan();
+	
 	int indexEdit;
 	cout<<">>> Masukkan nomor layanan yang ingin diedit: ";
 	cin>>indexEdit;
@@ -494,6 +568,7 @@ void editLayanan() {
 		getline(cin, listLayanan[indexEdit].deskripsiLayanan);
 		
 		cout<<">>> Data layanan berhasil diperbarui!\n";
+		simpanDataLayanan();
 	} else {
 		cout<<">>> Nomor layanan tidak ditemukan.\n";
 	}
@@ -520,6 +595,7 @@ void hapusLayanan() {
 			}
 			jumlahLayanan--;
 			cout<<">>> Layanan berhasil dihapus!\n";
+			simpanDataLayanan();
 		} else {
 			cout<<">>> Penghapusan dibatalkan.\n";
 		}
@@ -572,18 +648,26 @@ void menuManajemenLayanan() {
 		switch (pilMenu) {
 			case 1: 
 				tambahLayanan(); 
+				getch();
+				system("cls");
 				break;
 			case 2: 
 				tampilanLayanan(); 
+				getch();
+				system("cls");
 				break;
 			case 3: 
 				editLayanan(); 
+				system("cls");
 				break;
 			case 4: 
 				hapusLayanan(); 
+				system("cls");
 				break;
 			case 5: 
 				cariLayanan(); 
+				getch();
+				system("cls");
 				break;
 			case 6: 
 				cout<<"Kembali ke menu utama...\n"; 
@@ -610,11 +694,27 @@ Pelanggan listPelanggan[1000]; // menampung 1000 pelanggan
 int jumlahPelanggan = 0; // jumlah awal pelanggan
 int nextIdPelanggan = 1;
 
+void simpanDataPelanggan() {
+    ofstream file("pelanggan.txt");
+    for (int i = 0; i < jumlahPelanggan; i++) {
+        file << listPelanggan[i].idPelanggan << "|"
+             << listPelanggan[i].nama << "|"
+             << listPelanggan[i].alamat << "|"
+             << listPelanggan[i].nomorTelepon << "|"
+             << listPelanggan[i].email << "|"
+             << listPelanggan[i].totalTransaksi << "|"
+             << listPelanggan[i].totalPengeluaran << "\n";
+    }
+    file.close();
+}
+
 // menambahkan pelanggan
 void tambahPelanggan() {
     Pelanggan p;
     p.idPelanggan = nextIdPelanggan++;
-
+	
+	cout << endl;
+	cout<<"====== TAMBAH PELANGGAN ======\n";
     cout << "Nama pelanggan: ";
     cin.ignore(); // supaya getline bisa dipakai dengan baik setelah cin
     getline(cin, p.nama);
@@ -632,7 +732,8 @@ void tambahPelanggan() {
     p.totalPengeluaran = 0.0;
 
     listPelanggan[jumlahPelanggan++] = p;
-    cout << ">>> Pelanggan berhasil ditambahkan dengan ID " << p.idPelanggan << "\n";
+    cout << "\n>>> Pelanggan berhasil ditambahkan dengan ID " << p.idPelanggan << "\n";
+    simpanDataPelanggan();
 }
 
 // melihat semua pelanggan
@@ -661,12 +762,14 @@ void lihatSemuaPelanggan() {
              << setw(15) << listPelanggan[i].totalTransaksi
              << "Rp" << fixed << setprecision(0) << listPelanggan[i].totalPengeluaran << endl;
     }
+    simpanDataPelanggan();
 }
 
 // mengedit informasi pelanggan
 void editDataPelanggan() {
+	lihatSemuaPelanggan();
     int id;
-    cout << "Masukkan ID pelanggan yang ingin diedit: ";
+    cout << "\nMasukkan ID pelanggan yang ingin diedit: ";
     cin >> id;
 
     for (int i = 0; i < jumlahPelanggan; i++) {
@@ -696,6 +799,7 @@ void editDataPelanggan() {
             cout << ">>> Data pelanggan berhasil diperbarui.\n";
             return;
         }
+        simpanDataPelanggan();
     }
     cout << ">>> Pelanggan dengan ID tersebut tidak ditemukan.\n";
 }
@@ -719,6 +823,7 @@ void hapusPelanggan() {
         }
     }
     cout << ">>> Pelanggan dengan ID tersebut tidak ditemukan.\n";
+    simpanDataPelanggan();
 }
 
 // mencari pelanggan
@@ -800,6 +905,20 @@ struct DataTransaksi {
 DataTransaksi riwayatTransaksi[1000]; // menampung 1000 data transaksi
 int totalTransaksi = 0;
 
+void simpanDataTransaksi() {
+    ofstream file("transaksi.txt");
+    for (int i = 0; i < totalTransaksi; i++) {
+        file << riwayatTransaksi[i].idPelanggan << "|"
+             << riwayatTransaksi[i].namaItem << "|"
+             << riwayatTransaksi[i].jenisItem << "|"
+             << riwayatTransaksi[i].jumlah << "|"
+             << riwayatTransaksi[i].hargaSatuan << "|"
+             << riwayatTransaksi[i].total << "|"
+             << riwayatTransaksi[i].waktu << "\n";
+    }
+    file.close();
+}
+
 // fungsi untuk mengambil waktu saat transaksi dilakukan
 string waktuSekarang() {
 	time_t sekarang = time(0);
@@ -807,6 +926,7 @@ string waktuSekarang() {
 	char buffer[30];
 	strftime(buffer, sizeof(buffer), "%y-%m-%d %H:%M:%S", ltm);
 	return string(buffer);
+	simpanDataTransaksi();
 }
 
 // fungsi proses transaksi prosuk
@@ -856,6 +976,8 @@ void prosesTransaksiProduk() {
     }
 
     cout << ">>> Transaksi produk berhasil!\n";
+    simpanDataTransaksi();
+    
 }
 
 // proses transaksi layanan
@@ -895,6 +1017,7 @@ void prosesTransaksiLayanan() {
     }
 
     cout << ">>> Transaksi layanan berhasil!\n";
+    simpanDataTransaksi();
 }
 
 // fungsi menambahkan transaksi
@@ -912,6 +1035,7 @@ void tambahTransaksi() {
         prosesTransaksiLayanan();
     else
         cout << ">>> Pilihan tidak valid!\n";
+    simpanDataTransaksi();
 }
 
 // menampilkan riwayat transaksi
@@ -1000,17 +1124,58 @@ void menuPelanggan() {
         cin >> pilih;
 
         switch (pilih) {
-            case 1: tambahPelanggan(); break;
-            case 2: lihatSemuaPelanggan(); break;
-            case 3: editDataPelanggan(); break;
-            case 4: hapusPelanggan(); break;
-            case 5: cariPelanggan(); break;
-            case 6: lihatRiwayatPerPelanggan(); break;
-            case 7: cout << "Kembali ke menu utama...\n"; break;
-            default: cout << ">>> Pilihan tidak valid!\n"; break;
+            case 1: 
+				tambahPelanggan(); 
+				getch();
+				system("cls");
+				break;
+            case 2: 
+				lihatSemuaPelanggan(); 
+				getch();
+				system("cls");
+				break;
+            case 3: 
+				editDataPelanggan(); 
+				getch();
+				break;
+            case 4: 
+				hapusPelanggan(); 
+				getch();
+				system("cls");
+				break;
+            case 5: 
+				cariPelanggan(); 
+				getch();
+				system("cls");
+				break;
+            case 6: 
+				lihatRiwayatPerPelanggan(); 
+				getch();
+				system("cls");
+				break;
+            case 7: 
+				cout << "Kembali ke menu utama...\n"; 
+				break;
+            default: 
+				cout << ">>> Pilihan tidak valid!\n"; 
+				break;
         }
     } while (pilih != 7);
 }
+
+void simpanLaporanPenjualan() {
+    ofstream file("laporan_penjualan.txt");
+    double totalPendapatan = 0;
+
+    for (int i = 0; i < totalTransaksi; i++) {
+        totalPendapatan += riwayatTransaksi[i].total;
+    }
+
+    file << "Total Transaksi: " << totalTransaksi << "\n";
+    file << "Total Pendapatan: Rp" << fixed << setprecision(0) << totalPendapatan << "\n";
+    file.close();
+}
+
 
 // laporan penjualan
 void laporanTotalPenjualan() {
@@ -1025,6 +1190,7 @@ void laporanTotalPenjualan() {
     cout << "=== Laporan Total Penjualan ===\n";
     cout << "Jumlah Transaksi: " << totalTransaksiCount << endl;
     cout << "Total Pendapatan: Rp" << fixed << setprecision(0) << total << endl;
+    simpanLaporanPenjualan();
 }
 
 // laporan penjualan per produk
@@ -1048,6 +1214,7 @@ void laporanPenjualanPerProduk() {
             cout << "Pendapatan: Rp" << fixed << setprecision(0) << totalPendapatan << "\n\n";
         }
     }
+    simpanLaporanPenjualan();
 }
 
 // laporan penjualan per layanan
@@ -1071,6 +1238,7 @@ void laporanPenjualanPerLayanan() {
             cout << "Pendapatan: Rp" << fixed << setprecision(0) << totalPendapatan << "\n\n";
         }
     }
+    simpanLaporanPenjualan();
 }
 
 // menu utama laporan penjualan
@@ -1105,7 +1273,6 @@ void menuLaporanPenjualan() {
     } while (pilih != 4);
 }
 
-
 int main() {
 	logNsign();
 	
@@ -1127,9 +1294,11 @@ int main() {
         switch (pilSistem) {
             case 1:
 				menuManajemenProduk();
+				system("cls");
 				break;
 			case 2:
 				menuManajemenLayanan();
+				system("cls");
 				break;
 			case 3:
 				menuPelanggan();
